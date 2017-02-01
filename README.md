@@ -1,5 +1,5 @@
 # linmon
-**One stop monitoring tool for linux machines**
+**One stop bird's eye monitoring tool for linux desktop/servers**
 
 ## Gist
 This script installs necessary packages and starts the monitoring tools 
