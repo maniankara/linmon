@@ -3,11 +3,13 @@
 
 INSTALL_CMD='sudo apt install -y';
 PKG_LIST='htop sysstat iftop tmux';
+ACTIVE_INTERFACE=$(route | grep '^default' | grep -o '[^ ]*$')
 
 function install_packages() {
     echo "INFO: Installing packages";
-    $INSTALL_CMD $PKG_LIST
+    $INSTALL_CMD $PKG_LIST;
 }
+
 function main {
     echo "INFO: Starting preparation";
     echo "INFO: The following packages will be installed";
@@ -19,7 +21,9 @@ function main {
     # -s <name of the session>,
     # -d <shell_command>
     # panes are numbered from 0
-    tmux new-session -s linmon -d htop \; split-window -d 'watch -n1 iostat'\; select-pane -t1 \; split-window -dh 'sudo iftop' \; split-window -d 'bash -c "echo Press enter to end monitoring; read n; tmux kill-session -t linmon"' \; select-pane -t2
+    cmd="tmux new-session -s linmon -d htop \; split-window -d 'watch -n1 iostat'\; select-pane -t1 \; split-window -dh 'sudo iftop -i $ACTIVE_INTERFACE' \; split-window -d 'bash -c \"echo Press enter to end monitoring; read n; tmux kill-session -t linmon\"' \; select-pane -t2";
+    echo "INFO: executing: $cmd";
+    echo $cmd | bash
     echo "INFO: Press enter to attach or Ctrl+c to stay detached";
     read n;
     tmux attach -t linmon
